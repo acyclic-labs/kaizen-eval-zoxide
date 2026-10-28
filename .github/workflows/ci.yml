@@ -45,7 +45,10 @@ jobs:
       - name: Setup cache
         uses: Swatinem/rust-cache@v2.9.2
         with:
-          key: ${{ matrix.os }}
+          # shell.nix sets CARGO_TARGET_DIR=target_nix, so cache that directory
+          # instead of the default target/. The toolchain comes from shell.nix.
+          key: ${{ matrix.os }}-${{ hashFiles('shell.nix') }}
+          workspaces: . -> target_nix
       - name: Install just
         uses: taiki-e/install-action@v2.87.21
         with:
